@@ -1,0 +1,2 @@
+tugas/minggu11/Tugas_Minggu11_Kelompok8/Dataset/transformed_dataset.csv filter=lfs diff=lfs merge=lfs -text
+tugas/minggu11/Tugas_Minggu11_Kelompok8/Dataset/supabase_local.db filter=lfs diff=lfs merge=lfs -text
