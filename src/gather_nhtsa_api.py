@@ -7,13 +7,21 @@ import os
 # KONFIGURASI
 # =============================================================================
 # 1. File Kaggle yang sudah Anda download manual
-KAGGLE_FILE_PATH = 'US_Accidents_March23.csv' 
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_RAW = PROJECT_ROOT / 'data' / 'raw'
+DATA_PROCESSED = PROJECT_ROOT / 'data' / 'processed'
+DATA_RAW.mkdir(parents=True, exist_ok=True)
+DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
+
+KAGGLE_FILE_PATH = DATA_RAW / 'US_Accidents_March23.csv'
 
 # 2. Endpoint API NHTSA
 NHTSA_API_URL = 'https://crashviewer.nhtsa.dot.gov/crashviewer/CrashAPI/crashes/GetCaseList?format=csv'
 
 # 3. Nama file output untuk hasil API
-API_OUTPUT_FILE = 'nhtsa_api_data.csv'
+API_OUTPUT_FILE = DATA_RAW / 'nhtsa_api_data.csv'
 
 def gather_nhtsa_api():
     """Fungsi untuk menarik data dari API NHTSA dan menyimpannya ke CSV."""

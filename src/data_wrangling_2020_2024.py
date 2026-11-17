@@ -12,8 +12,16 @@ import re
 import time
 import json
 import datetime
+from pathlib import Path
 import pandas as pd
 import numpy as np
+
+# Path relatif terhadap root repository
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_RAW = PROJECT_ROOT / "data" / "raw"
+DATA_PROCESSED = PROJECT_ROOT / "data" / "processed"
+DATA_RAW.mkdir(parents=True, exist_ok=True)
+DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
 
 # Official NHTSA CrashAPI State Definitions
 NHTSA_STATE_DEFINITIONS = [
@@ -107,14 +115,9 @@ def get_nhtsa_lookup_df():
 
 def parse_nhtsa_2024_cases():
     """Parses live 2024 fatal crash cases fetched directly from NHTSA CrashAPI."""
-    files = [
-        "/home/relyf/.gemini/antigravity/brain/f093d9ec-ecf6-4a35-b0ad-027aece87cae/.system_generated/steps/168/content.md",
-        "/home/relyf/.gemini/antigravity/brain/f093d9ec-ecf6-4a35-b0ad-027aece87cae/.system_generated/steps/210/content.md",
-        "/home/relyf/.gemini/antigravity/brain/f093d9ec-ecf6-4a35-b0ad-027aece87cae/.system_generated/steps/212/content.md",
-        "/home/relyf/.gemini/antigravity/brain/f093d9ec-ecf6-4a35-b0ad-027aece87cae/.system_generated/steps/218/content.md",
-        "/home/relyf/.gemini/antigravity/brain/f093d9ec-ecf6-4a35-b0ad-027aece87cae/.system_generated/steps/220/content.md",
-        "/home/relyf/.gemini/antigravity/brain/f093d9ec-ecf6-4a35-b0ad-027aece87cae/.system_generated/steps/222/content.md"
-    ]
+    # Respons API NHTSA yang tersimpan lokal (bukan path absolut mesin tertentu).
+    # Letakkan file hasil pengambilan API di data/raw/nhtsa_api_response_*.txt
+    files = [str(p) for p in sorted(DATA_RAW.glob("nhtsa_api_response_*.txt"))]
     
     records = []
     seen_cases = set()
@@ -187,8 +190,8 @@ def parse_nhtsa_2024_cases():
 
 def run_2020_2024_wrangling():
     start_time = time.time()
-    input_file = "US_Accidents_March23.csv"
-    output_file = "US_Accidents_Cleaned_NHTSA.csv"
+    input_file = DATA_RAW / "US_Accidents_March23.csv"
+    output_file = DATA_PROCESSED / "US_Accidents_Cleaned_NHTSA_2020-2024.csv"
     
     print("=== Starting Data Wrangling Pipeline (2020 - 2024) ===")
     print(f"Input file: {input_file}")

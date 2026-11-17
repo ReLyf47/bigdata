@@ -1,15 +1,23 @@
 """
-Data Wrangling and Integration Pipeline (Maximizing 2023 and Most Recent Data)
+Data Wrangling and Integration Pipeline
 Dataset: US_Accidents_March23.csv
 External Reference: NHTSA CrashAPI (https://crashviewer.nhtsa.dot.gov/crashviewer/crashapi)
-Target: Exactly 250,000 clean rows (all available 2023 data + newest 2022 data), >= 12 columns
+Requirements: Minimum 200,000 clean rows, at least 12 columns
 """
 
 import sys
 import os
 import time
+from pathlib import Path
 import pandas as pd
 import numpy as np
+
+# Path relatif terhadap root repository (agar skrip bisa dijalankan dari mana saja)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_RAW = PROJECT_ROOT / "data" / "raw"
+DATA_PROCESSED = PROJECT_ROOT / "data" / "processed"
+DATA_RAW.mkdir(parents=True, exist_ok=True)
+DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
 
 # Official NHTSA CrashAPI State Definitions (definitions/GetStates)
 # Source: https://crashviewer.nhtsa.dot.gov/crashviewer/CrashAPI/definitions/GetStates
@@ -69,6 +77,7 @@ NHTSA_STATE_DEFINITIONS = [
     {"Id": 56, "State_Code": "WY", "Def": "Wyoming", "Region": "West"}
 ]
 
+# NHTSA FARS State Benchmark Risk Levels based on NHTSA FARS annual crash statistics
 FARS_HIGH_RISK_STATES = {"TX", "CA", "FL", "GA", "NC", "OH", "PA", "TN", "IL", "MI"}
 FARS_MODERATE_RISK_STATES = {"AZ", "NY", "SC", "VA", "MO", "IN", "AL", "LA", "OK", "KY", "CO", "WA", "WI"}
 
@@ -98,24 +107,24 @@ def get_nhtsa_lookup_df():
             return "Low"
             
     df_nhtsa["NHTSA_Fatality_Risk_Tier"] = df_nhtsa["State"].apply(assign_risk_tier)
-    df_nhtsa["NHTSA_API_Latest_FARS_Year"] = 2024  # Latest verified active year in NHTSA CrashAPI
     return df_nhtsa
 
-def run_recent_wrangling():
+def run_wrangling():
     start_time = time.time()
-    input_file = "US_Accidents_March23.csv"
-    output_file = "US_Accidents_Cleaned_NHTSA.csv"
-    target_clean_rows = 250000
+    input_file = DATA_RAW / "US_Accidents_March23.csv"
+    output_file = DATA_PROCESSED / "US_Accidents_Cleaned_NHTSA.csv"
+    target_clean_rows = 250000  # Target above 200,000 minimal requirement
     
-    print(f"=== Starting Recent-Focused Data Wrangling Pipeline ===")
+    print(f"=== Starting Data Wrangling Pipeline ===")
     print(f"Input file: {input_file}")
     print(f"Target clean rows: {target_clean_rows:,} (min required: 200,000)")
-    print(f"Priority: Most Recent Data (ALL 2023 + latest 2022), descending sorted")
     
-    # 1. Load NHTSA reference
+    # 1. Prepare NHTSA Reference Data
+    print("\n[Step 1/5] Loading NHTSA CrashAPI reference data...")
     df_nhtsa = get_nhtsa_lookup_df()
-    print(f"Loaded {len(df_nhtsa)} NHTSA reference state records.")
+    print(f"Loaded {len(df_nhtsa)} NHTSA state reference records.")
     
+    # 2. Columns to read from US Accidents
     selected_cols = [
         "ID",
         "Severity",
@@ -132,12 +141,11 @@ def run_recent_wrangling():
         "Weather_Condition"
     ]
     
-    rows_2023 = []
-    rows_2022 = []
-    
-    print("\nScanning dataset for all 2023 and 2022 records...")
-    chunk_size = 500000
-    chunk_idx = 0
+    print("\n[Step 2/5] Reading and cleaning raw data in streaming chunks...")
+    cleaned_chunks = []
+    total_clean_rows = 0
+    chunk_size = 50000
+    chunk_count = 0
     
     for chunk in pd.read_csv(
         input_file,
@@ -145,85 +153,73 @@ def run_recent_wrangling():
         chunksize=chunk_size,
         low_memory=False
     ):
-        chunk_idx += 1
+        chunk_count += 1
         
-        # Check if chunk has 2023 or 2022 rows
-        is_recent = chunk["Start_Time"].str.startswith(("2023", "2022"), na=False)
-        if not is_recent.any():
-            continue
-            
-        c_recent = chunk[is_recent].dropna().copy()
-        c_recent["Start_Time"] = pd.to_datetime(c_recent["Start_Time"], errors="coerce")
-        c_recent["End_Time"] = pd.to_datetime(c_recent["End_Time"], errors="coerce")
-        c_recent = c_recent.dropna(subset=["Start_Time", "End_Time"])
+        # A. Missing Value Handling: drop rows with nulls in any selected column
+        clean_c = chunk.dropna().copy()
         
-        # Temporal validation
-        dur = (c_recent["End_Time"] - c_recent["Start_Time"]).dt.total_seconds() / 60.0
-        c_recent["Duration_Minutes"] = dur.round(2)
-        c_recent = c_recent[(c_recent["Duration_Minutes"] > 0) & (c_recent["Duration_Minutes"] <= 1440)]
+        # B. Parse Datetimes
+        clean_c["Start_Time"] = pd.to_datetime(clean_c["Start_Time"], errors="coerce")
+        clean_c["End_Time"] = pd.to_datetime(clean_c["End_Time"], errors="coerce")
+        clean_c = clean_c.dropna(subset=["Start_Time", "End_Time"])
         
-        # Spatial validation
-        c_recent = c_recent[
-            (c_recent["Start_Lat"] >= 24.0) & (c_recent["Start_Lat"] <= 50.0) &
-            (c_recent["Start_Lng"] >= -125.0) & (c_recent["Start_Lng"] <= -66.0)
+        # C. Feature Engineering: Duration in minutes
+        clean_c["Duration_Minutes"] = (
+            (clean_c["End_Time"] - clean_c["Start_Time"]).dt.total_seconds() / 60.0
+        ).round(2)
+        
+        # D. Temporal Validation: Duration must be positive and <= 24 hours (1440 min)
+        clean_c = clean_c[(clean_c["Duration_Minutes"] > 0) & (clean_c["Duration_Minutes"] <= 1440)]
+        
+        # E. Spatial Validation: Continental US bounds
+        clean_c = clean_c[
+            (clean_c["Start_Lat"] >= 24.0) & (clean_c["Start_Lat"] <= 50.0) &
+            (clean_c["Start_Lng"] >= -125.0) & (clean_c["Start_Lng"] <= -66.0)
         ]
         
-        # Weather validation
-        c_recent = c_recent[
-            (c_recent["Temperature(F)"] >= -40.0) & (c_recent["Temperature(F)"] <= 125.0) &
-            (c_recent["Humidity(%)"] >= 0.0) & (c_recent["Humidity(%)"] <= 100.0) &
-            (c_recent["Visibility(mi)"] >= 0.0) & (c_recent["Visibility(mi)"] <= 50.0)
+        # F. Weather Validation: Reasonable ranges
+        clean_c = clean_c[
+            (clean_c["Temperature(F)"] >= -40.0) & (clean_c["Temperature(F)"] <= 125.0) &
+            (clean_c["Humidity(%)"] >= 0.0) & (clean_c["Humidity(%)"] <= 100.0) &
+            (clean_c["Visibility(mi)"] >= 0.0) & (clean_c["Visibility(mi)"] <= 50.0)
         ]
         
-        # Standardize text
-        c_recent["City"] = c_recent["City"].astype(str).str.strip().str.title()
-        c_recent["County"] = c_recent["County"].astype(str).str.strip().str.title()
-        c_recent["State"] = c_recent["State"].astype(str).str.strip().str.upper()
-        c_recent["Weather_Condition"] = c_recent["Weather_Condition"].astype(str).str.strip().str.title()
+        # G. Text standardisation
+        clean_c["City"] = clean_c["City"].astype(str).str.strip().str.title()
+        clean_c["County"] = clean_c["County"].astype(str).str.strip().str.title()
+        clean_c["State"] = clean_c["State"].astype(str).str.strip().str.upper()
+        clean_c["Weather_Condition"] = clean_c["Weather_Condition"].astype(str).str.strip().str.title()
         
-        # Feature engineering
-        c_recent["Hour"] = c_recent["Start_Time"].dt.hour
-        c_recent["Day_of_Week"] = c_recent["Start_Time"].dt.day_name()
-        c_recent["Severity"] = c_recent["Severity"].astype(int)
-        c_recent["Severity_Label"] = c_recent["Severity"].map(SEVERITY_MAP).fillna("Unknown")
+        # H. Temporal features
+        clean_c["Hour"] = clean_c["Start_Time"].dt.hour
+        clean_c["Day_of_Week"] = clean_c["Start_Time"].dt.day_name()
         
-        # Separate 2023 and 2022
-        mask_2023 = c_recent["Start_Time"].dt.year == 2023
-        c_23 = c_recent[mask_2023]
-        c_22 = c_recent[~mask_2023]
+        # I. Severity Label
+        clean_c["Severity"] = clean_c["Severity"].astype(int)
+        clean_c["Severity_Label"] = clean_c["Severity"].map(SEVERITY_MAP).fillna("Unknown")
         
-        if len(c_23) > 0:
-            rows_2023.append(c_23)
-        if len(c_22) > 0:
-            # Keep only the newest 2022 rows to keep memory usage low
-            rows_2022.append(c_22)
+        # J. Integrate with NHTSA CrashAPI reference
+        merged_c = clean_c.merge(df_nhtsa, on="State", how="inner")
+        
+        cleaned_chunks.append(merged_c)
+        total_clean_rows += len(merged_c)
+        print(f"  Chunk {chunk_count}: added {len(merged_c):,} valid rows (Total accumulated: {total_clean_rows:,})")
+        
+        if total_clean_rows >= target_clean_rows:
+            print(f"Reached target size: {total_clean_rows:,} rows.")
+            break
             
-        print(f"  Chunk {chunk_idx}: processed {len(c_23):,} (2023) and {len(c_22):,} (2022) rows")
-            
-    print("\nConsolidating and deduplicating...")
-    df_2023 = pd.concat(rows_2023, ignore_index=True).drop_duplicates(subset=["ID"])
-    df_2022 = pd.concat(rows_2022, ignore_index=True).drop_duplicates(subset=["ID"])
+    print("\n[Step 3/5] Consolidating and deduplicating final dataset...")
+    df_final = pd.concat(cleaned_chunks, ignore_index=True)
+    df_final = df_final.drop_duplicates(subset=["ID"])
     
-    print(f"Total clean 2023 rows collected: {len(df_2023):,}")
-    print(f"Total clean 2022 rows collected: {len(df_2022):,}")
+    # If slightly above target, slice exactly to a clean number or keep all
+    if len(df_final) > target_clean_rows:
+        df_final = df_final.iloc[:target_clean_rows].copy()
+        
+    print(f"Final clean dataset shape: {df_final.shape[0]:,} rows, {df_final.shape[1]} columns")
     
-    # Sort 2022 descending by Start_Time to take the latest 2022 incidents (e.g. Dec 2022, Nov 2022, etc.)
-    df_2022 = df_2022.sort_values(by="Start_Time", ascending=False)
-    needed_from_2022 = target_clean_rows - len(df_2023)
-    print(f"Taking top {needed_from_2022:,} newest rows from late 2022 to reach target {target_clean_rows:,}...")
-    df_2022_top = df_2022.iloc[:needed_from_2022].copy()
-    
-    # Combine ALL 2023 + newest 2022
-    df_combined = pd.concat([df_2023, df_2022_top], ignore_index=True)
-    
-    # Sort entire dataset descending by Start_Time (most recent first!)
-    df_combined = df_combined.sort_values(by="Start_Time", ascending=False).reset_index(drop=True)
-    
-    # Integrate with NHTSA CrashAPI reference
-    print("\nIntegrating with NHTSA CrashAPI reference data...")
-    df_final = df_combined.merge(df_nhtsa, on="State", how="inner")
-    
-    # Columns ordering (20 columns total)
+    # Organize columns in logical order (19 columns total)
     ordered_columns = [
         "ID",
         "Severity",
@@ -240,39 +236,35 @@ def run_recent_wrangling():
         "NHTSA_State_Name",
         "NHTSA_Region",
         "NHTSA_Fatality_Risk_Tier",
-        "NHTSA_API_Latest_FARS_Year",
         "Temperature(F)",
         "Humidity(%)",
         "Visibility(mi)",
         "Weather_Condition"
     ]
+    
     df_final = df_final[ordered_columns]
     
-    print("\nQuality Assurance Checks:")
-    print(f"Shape: {df_final.shape}")
-    print(f"Null count total: {df_final.isnull().sum().sum()}")
-    print("Year distribution in final dataset:")
-    print(df_final["Start_Time"].dt.year.value_counts())
-    print("Latest timestamp:", df_final["Start_Time"].max())
-    print("Earliest timestamp:", df_final["Start_Time"].min())
+    # Final check on null values
+    print("\n[Step 4/5] Quality Assurance & Validation Checks:")
+    null_counts = df_final.isnull().sum()
+    print(f"Total null values across all columns: {null_counts.sum()}")
+    assert null_counts.sum() == 0, "Error: null values found in final dataset!"
+    assert len(df_final) >= 200000, f"Error: rows {len(df_final)} < 200,000 required!"
+    assert df_final.shape[1] >= 12, f"Error: columns {df_final.shape[1]} < 12 required!"
     
-    assert df_final.isnull().sum().sum() == 0, "Error: nulls found!"
-    assert len(df_final) >= 200000, "Error: < 200,000 rows!"
-    assert df_final.shape[1] >= 12, "Error: < 12 cols!"
-    
-    print("\nExporting to CSV...")
+    print("\n[Step 5/5] Exporting to CSV...")
     df_final.to_csv(output_file, index=False)
     file_size_mb = os.path.getsize(output_file) / (1024 * 1024)
-    elapsed = time.time() - start_time
+    elapsed_time = time.time() - start_time
     
     print(f"SUCCESS: Saved {output_file}")
     print(f"File Size: {file_size_mb:.2f} MB")
-    print(f"Total Rows: {len(df_final):,}")
-    print(f"Total Columns: {df_final.shape[1]}")
-    print(f"Execution Time: {elapsed:.2f} seconds")
+    print(f"Rows count: {len(df_final):,}")
+    print(f"Columns count: {df_final.shape[1]}")
+    print(f"Elapsed Time: {elapsed_time:.2f} seconds")
     
-    print("\n=== First 3 Rows (Most Recent Incidents) ===")
-    print(df_final.head(3).T)
+    print("\n=== Sample First 5 Rows ===")
+    print(df_final.head(5).to_string())
 
 if __name__ == "__main__":
-    run_recent_wrangling()
+    run_wrangling()
