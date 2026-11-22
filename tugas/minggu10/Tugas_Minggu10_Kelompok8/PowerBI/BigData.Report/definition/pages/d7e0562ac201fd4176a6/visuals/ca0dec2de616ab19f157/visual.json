@@ -1,0 +1,616 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "ca0dec2de616ab19f157",
+  "position": {
+    "x": 1260,
+    "y": 690,
+    "z": 10,
+    "height": 360,
+    "width": 630,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "case_id"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.case_id",
+              "nativeQueryRef": "case_id"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "county_name"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.county_name",
+              "nativeQueryRef": "county_name"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "crash_date"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Year"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.crash_date.Variation.Date Hierarchy.Year",
+              "nativeQueryRef": "crash_date Year"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "crash_date"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Quarter"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.crash_date.Variation.Date Hierarchy.Quarter",
+              "nativeQueryRef": "crash_date Quarter"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "crash_date"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Month"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.crash_date.Variation.Date Hierarchy.Month",
+              "nativeQueryRef": "crash_date Month"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "crash_date"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Day"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.crash_date.Variation.Date Hierarchy.Day",
+              "nativeQueryRef": "crash_date Day"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "state_name"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.state_name",
+              "nativeQueryRef": "state_name"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "public nhtsa_crash_analytics"
+                        }
+                      },
+                      "Property": "total_fatalities"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(public nhtsa_crash_analytics.total_fatalities)",
+              "nativeQueryRef": "Sum of total_fatalities"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "public nhtsa_crash_analytics"
+                        }
+                      },
+                      "Property": "total_vehicles"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(public nhtsa_crash_analytics.total_vehicles)",
+              "nativeQueryRef": "Sum of total_vehicles"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "updated_at"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Year"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.updated_at.Variation.Date Hierarchy.Year",
+              "nativeQueryRef": "updated_at Year"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "updated_at"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Quarter"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.updated_at.Variation.Date Hierarchy.Quarter",
+              "nativeQueryRef": "updated_at Quarter"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "updated_at"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Month"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.updated_at.Variation.Date Hierarchy.Month",
+              "nativeQueryRef": "updated_at Month"
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "PropertyVariationSource": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "public nhtsa_crash_analytics"
+                            }
+                          },
+                          "Name": "Variation",
+                          "Property": "updated_at"
+                        }
+                      },
+                      "Hierarchy": "Date Hierarchy"
+                    }
+                  },
+                  "Level": "Day"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.updated_at.Variation.Date Hierarchy.Day",
+              "nativeQueryRef": "updated_at Day"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "weather_category"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.weather_category",
+              "nativeQueryRef": "weather_category"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2376bca189740957d660",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public nhtsa_crash_analytics"
+              }
+            },
+            "Property": "case_id"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4f95dd38e40fe132e3b2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public nhtsa_crash_analytics"
+              }
+            },
+            "Property": "county_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "7823ca3c2b263e016515",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "crash_date"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Year"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "9a4cea843da72fa161e1",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "crash_date"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Quarter"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1459a3b9448d6fa412fb",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "crash_date"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Month"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "e29c65cdb3054c6dcd88",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "crash_date"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Day"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d1af7e04ea40ceb3df12",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public nhtsa_crash_analytics"
+              }
+            },
+            "Property": "state_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1df4628e9d73f01c9267",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "public nhtsa_crash_analytics"
+                  }
+                },
+                "Property": "total_fatalities"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "fca6e56f77cc61804507",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "public nhtsa_crash_analytics"
+                  }
+                },
+                "Property": "total_vehicles"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "0c2c694cdaa90ee78784",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "updated_at"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Year"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "37c4e0aa0a216dc9931f",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "updated_at"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Quarter"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c3f1b8d573cec753ac89",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "updated_at"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Month"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "df445487218579d1fe9e",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "PropertyVariationSource": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Name": "Variation",
+                    "Property": "updated_at"
+                  }
+                },
+                "Hierarchy": "Date Hierarchy"
+              }
+            },
+            "Level": "Day"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "470509dca135a7e3c0f5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public nhtsa_crash_analytics"
+              }
+            },
+            "Property": "weather_category"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

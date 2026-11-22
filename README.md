@@ -10,37 +10,52 @@ ETL klasik (Apache Airflow → Apache Beam / Pandas → Supabase PostgreSQL → 
 bigdata/
 ├── README.md
 ├── data/
-│   ├── raw/                         # Sumber mentah / snapshot API (diabaikan git)
+│   ├── raw/                         # Sumber mentah / snapshot API (tersimpan & tidak diabaikan git)
 │   │   ├── nhtsa_api_live.json      # 8.798 kasus dari NHTSA Crash API
 │   │   └── nhtsa_api_live_20XX.json # Respons per tahun (2020-2026)
-│   └── processed/                   # Hasil data wrangling Minggu 3
+│   └── processed/                   # Hasil data wrangling
 │       ├── US_Accidents_Cleaned_NHTSA.csv
 │       ├── US_Accidents_Cleaned_NHTSA_2020-2024.csv
 │       └── US_Accidents_Cleaned_NHTSA_Recent.csv
-├── src/                             # Skrip gathering, wrangling, & loader
-│   ├── gather_nhtsa_api.py
-│   ├── data_wrangling.py
-│   ├── data_wrangling_2020_2024.py
-│   ├── data_wrangling_recent.py
-│   ├── load_supabase.py             # Script otomatis muat dataset ke Supabase PostgreSQL
-│   └── test_api.py
-├── docs/                            # Arsitektur & laporan
-│   ├── Arsitektur_ETL_Klasik_NHTSA_revised.pdf
-│   ├── Laporan_Progres_Minggu3.docx
-│   └── Laporan_Progres_Minggu3.pdf
+├── src/                             # Modul kode sumber terstruktur
+│   ├── etl/                         # Skrip ekstraksi, wrangling, & database loader
+│   │   ├── gather_nhtsa_api.py
+│   │   ├── data_wrangling.py
+│   │   ├── data_wrangling_2020_2024.py
+│   │   ├── data_wrangling_recent.py
+│   │   ├── load_supabase.py         # Muat dataset ke Supabase PostgreSQL
+│   │   └── test_api.py
+│   ├── reporting/                   # Generator laporan Word (DOCX) & PDF
+│   │   ├── generate_production_docs.py
+│   │   ├── generate_docs.py
+│   │   └── build_doc_with_screenshots.py
+│   └── powerbi/                     # Utilitas otomatisasi Power BI PBIP & TMDL
+│       ├── build_pbir_visuals.py
+│       └── patch_tmdl.py
+├── docs/                            # Dokumentasi, arsitektur, & aset laporan
+│   ├── architecture/                # Diagram arsitektur pipeline ETL
+│   │   └── Arsitektur_ETL_Klasik_NHTSA_revised.pdf
+│   ├── reports/                     # Laporan kemajuan & laporan akhir (PDF/DOCX)
+│   │   ├── Laporan_Progres_Minggu3.docx / .pdf
+│   │   └── Laporan_ETL_dan_Analisis_BigData_Kelompok8.docx / .pdf
+│   └── assets/                      # Aset tangkapan layar untuk laporan teknis
+│       └── screenshots/
 └── tugas/
     └── minggu10/
-        ├── README_WINDOWS_POWERBI.md  # Petunjuk eksekusi & Power BI di Windows
-        ├── Tugas_Minggu10_Kelompok8/  # Luaran tugas siap dikumpulkan
-        │   ├── PANDUAN_POWERBI_WINDOWS.md
+        ├── Tugas_Minggu10_Kelompok8/  # Luaran tugas siap dikumpulkan (clean package)
+        │   ├── BigData.pbix           # Dashboard laporan Power BI terkompilasi
         │   ├── Source_Code/ETL_Pipeline.ipynb
         │   ├── Dataset/transformed_dataset.csv (266,656 baris)
         │   ├── Dataset/nhtsa_api_cases.csv     (8,779 baris)
         │   ├── Dataset/supabase_local.db       (SQLite staging)
-        │   ├── Documentation/Dokumentasi_ETL.pdf
-        │   ├── Documentation/Dokumentasi_ETL.docx
+        │   ├── Documentation/Dokumentasi_ETL.pdf & .docx
         │   ├── Documentation/etl_metrics.json
         │   └── Screenshots/01_extract.png ... 07_diagram_implementation.png
+        ├── powerbi_project/           # Proyek Fabric / Power BI Developer (PBIP)
+        │   ├── BigData.pbip
+        │   ├── BigData.Report/
+        │   ├── BigData.SemanticModel/
+        │   └── README.md
         └── Tugas_Minggu10_Kelompok8.zip
 ```
 
@@ -66,7 +81,7 @@ git pull origin main
 Jika tabel di Supabase belum terisi data:
 ```powershell
 pip install pandas sqlalchemy psycopg2-binary
-python src/load_supabase.py --password PASSWORD_DATABASE_SUPABASE_ANDA
+python src/etl/load_supabase.py --password PASSWORD_DATABASE_SUPABASE_ANDA
 ```
 
 ### 4. Setup Power BI Desktop di Windows

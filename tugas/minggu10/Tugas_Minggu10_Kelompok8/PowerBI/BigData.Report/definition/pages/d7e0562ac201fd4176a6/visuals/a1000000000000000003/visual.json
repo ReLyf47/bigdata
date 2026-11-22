@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "a1000000000000000003",
+  "position": {
+    "x": 730,
+    "y": 30,
+    "z": 3,
+    "height": 150,
+    "width": 330,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "Total Vehicles"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.Total Vehicles",
+              "nativeQueryRef": "Total Vehicles"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

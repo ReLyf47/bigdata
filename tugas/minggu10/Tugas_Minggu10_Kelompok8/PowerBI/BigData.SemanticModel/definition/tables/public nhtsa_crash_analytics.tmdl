@@ -1,0 +1,110 @@
+table 'public nhtsa_crash_analytics'
+	lineageTag: bb406ded-10ab-49a4-8568-389081555116
+
+	measure 'Total Cases' = DISTINCTCOUNT('public nhtsa_crash_analytics'[case_id])
+		formatString: #,##0
+		lineageTag: 7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d
+
+	measure 'Total Fatalities' = SUM('public nhtsa_crash_analytics'[total_fatalities])
+		formatString: #,##0
+		lineageTag: 8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e
+
+	measure 'Total Vehicles' = SUM('public nhtsa_crash_analytics'[total_vehicles])
+		formatString: #,##0
+		lineageTag: 9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f
+
+	measure 'Avg Fatalities' = AVERAGE('public nhtsa_crash_analytics'[total_fatalities])
+		formatString: 0.00
+		lineageTag: 0d1e2f3a-4b5c-6d7e-8f9a-0b1c2d3e4f5a
+
+	column case_id
+		dataType: string
+		lineageTag: f64eddc4-d8b4-4e6c-a728-4330b6f85747
+		summarizeBy: none
+		sourceColumn: case_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column crash_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e4b5e958-b2d9-4719-ab99-aeb5eccd2fc9
+		summarizeBy: none
+		sourceColumn: crash_date
+
+		variation Variation
+			isDefault
+			relationship: ff910137-4df0-4600-9d98-87469f5f5e16
+			defaultHierarchy: LocalDateTable_807def88-e116-4302-94a4-8bef579afe22.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column state_name
+		dataType: string
+		lineageTag: 49b185f6-aeda-4fec-8302-9aa048c91e69
+		summarizeBy: none
+		sourceColumn: state_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column county_name
+		dataType: string
+		lineageTag: 1c07be8c-3d89-4dc1-b1a6-dd51709edb74
+		summarizeBy: none
+		sourceColumn: county_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_vehicles
+		dataType: int64
+		formatString: 0
+		lineageTag: d49ccbc9-0914-4f27-a08e-2ee1047becc0
+		summarizeBy: sum
+		sourceColumn: total_vehicles
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_fatalities
+		dataType: int64
+		formatString: 0
+		lineageTag: 53a34504-8835-4263-9084-468ca74fb1d0
+		summarizeBy: sum
+		sourceColumn: total_fatalities
+
+		annotation SummarizationSetBy = Automatic
+
+	column weather_category
+		dataType: string
+		lineageTag: 94f5f955-82cb-4b12-8b76-1708ba76baeb
+		summarizeBy: none
+		sourceColumn: weather_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column updated_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4e88a91c-d04d-4bb0-82b4-960110e829d6
+		summarizeBy: none
+		sourceColumn: updated_at
+
+		variation Variation
+			isDefault
+			relationship: 5eb0d644-713b-42f2-88e1-d1f81c1a740b
+			defaultHierarchy: LocalDateTable_a04900d3-635d-4f9b-ad42-10ed66f19018.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public nhtsa_crash_analytics' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("aws-1-ap-southeast-2.pooler.supabase.com", "postgres"),
+				    public_nhtsa_crash_analytics = Source{[Schema="public",Item="nhtsa_crash_analytics"]}[Data]
+				in
+				    public_nhtsa_crash_analytics
+
+	annotation PBI_ResultType = Table
+

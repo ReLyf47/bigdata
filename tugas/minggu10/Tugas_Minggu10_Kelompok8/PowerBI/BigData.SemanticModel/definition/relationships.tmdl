@@ -1,0 +1,10 @@
+relationship ff910137-4df0-4600-9d98-87469f5f5e16
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public nhtsa_crash_analytics'.crash_date
+	toColumn: LocalDateTable_807def88-e116-4302-94a4-8bef579afe22.Date
+
+relationship 5eb0d644-713b-42f2-88e1-d1f81c1a740b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public nhtsa_crash_analytics'.updated_at
+	toColumn: LocalDateTable_a04900d3-635d-4f9b-ad42-10ed66f19018.Date
+

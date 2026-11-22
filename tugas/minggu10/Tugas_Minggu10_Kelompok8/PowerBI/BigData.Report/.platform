@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "BigData"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d23c7e2d-11e0-4359-aa52-99801c8ebfe6"
+  }
+}

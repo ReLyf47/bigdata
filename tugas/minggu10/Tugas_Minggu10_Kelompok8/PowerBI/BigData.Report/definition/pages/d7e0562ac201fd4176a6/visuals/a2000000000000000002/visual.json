@@ -1,0 +1,57 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "a2000000000000000002",
+  "position": {
+    "x": 1230,
+    "y": 200,
+    "z": 7,
+    "height": 470,
+    "width": 660,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "weather_category"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.weather_category",
+              "nativeQueryRef": "weather_category",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "Total Fatalities"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.Total Fatalities",
+              "nativeQueryRef": "Total Fatalities"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

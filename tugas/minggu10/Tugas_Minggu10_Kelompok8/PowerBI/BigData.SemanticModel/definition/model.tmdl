@@ -1,0 +1,22 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-ID
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["public nhtsa_crash_analytics"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'public nhtsa_crash_analytics'
+ref table DateTableTemplate_1702c7d8-c6c8-4337-8b53-79e5ee84878f
+ref table LocalDateTable_807def88-e116-4302-94a4-8bef579afe22
+ref table LocalDateTable_a04900d3-635d-4f9b-ad42-10ed66f19018
+
+ref cultureInfo en-US
+

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "b88309762287b41e60e1",
+  "position": {
+    "x": 650,
+    "y": 690,
+    "z": 9,
+    "height": 360,
+    "width": 590,
+    "tabOrder": 9
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public nhtsa_crash_analytics"
+                    }
+                  },
+                  "Property": "county_name"
+                }
+              },
+              "queryRef": "public nhtsa_crash_analytics.county_name",
+              "nativeQueryRef": "county_name",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "public nhtsa_crash_analytics"
+                        }
+                      },
+                      "Property": "total_fatalities"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(public nhtsa_crash_analytics.total_fatalities)",
+              "nativeQueryRef": "Sum of total_fatalities"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public nhtsa_crash_analytics"
+                      }
+                    },
+                    "Property": "total_fatalities"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2549856798f0620fb13d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "public nhtsa_crash_analytics"
+              }
+            },
+            "Property": "county_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "660b8cf4730ec2af588e",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "public nhtsa_crash_analytics"
+                  }
+                },
+                "Property": "total_fatalities"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}
