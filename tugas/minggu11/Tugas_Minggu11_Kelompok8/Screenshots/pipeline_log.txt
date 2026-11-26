@@ -1,0 +1,52 @@
+[14:51:17] [INFO] Konfigurasi ELT siap | root: /home/relyf/Big Data
+[14:51:17] [INFO] EXTRACT  | Memulai ekstraksi data mentah dari sumber (tanpa cleaning/transformasi) ...
+[14:51:24] [INFO] EXTRACT  | Sumber 1 (Kaggle CSV): 266,656 baris x 21 kolom (raw string)
+[14:51:24] [INFO] EXTRACT  | Sumber 2 (NHTSA Crash API JSON): 8,798 baris x 9 atribut
+[14:51:24] [INFO] EXTRACT  | Sumber 3 (NHTSA GetStates): 53 entitas referensi state
+[14:51:24] [INFO] EXTRACT  | Pemeriksaan awal (tanpa modifikasi):
+[14:51:24] [INFO] EXTRACT  |   Kaggle CSV -> missing/kosong: 0, duplikat ID: 0, variasi Weather_Condition: 81 (termasuk 187 'N/A Precipitation')
+[14:51:24] [INFO] EXTRACT  |   NHTSA API  -> missing: 0, duplikat eksak: 0, St_Case berulang lintas tahun: 6,909, format tanggal /Date(ms+0000)/
+[14:51:24] [INFO] EXTRACT  | Selesai dalam 6.15 detik
+[14:51:25] [INFO] LOAD     | Menghubungkan ke target storage (Supabase PostgreSQL / skema raw) ...
+[14:51:25] [INFO] LOAD     | Koneksi berhasil -> SQLite 3.53.1 | database: supabase_local.db | skema: raw
+[14:51:41] [INFO] LOAD     | 266,656 baris raw JSON berhasil dimuat ke raw.accidents (raw_accidents)
+[14:51:41] [INFO] LOAD     | 8,798 baris raw JSON berhasil dimuat ke raw.nhtsa_api_cases (raw_nhtsa_api_cases)
+[14:51:41] [INFO] LOAD     | 53 baris raw JSON berhasil dimuat ke raw.nhtsa_states (raw_nhtsa_states)
+[14:51:41] [INFO] LOAD     | Seluruh raw data berhasil disimpan & diverifikasi pembacaannya dalam 15.97 detik
+[14:51:41] [INFO] TRANSFORM| Menjalankan SQL transformasi di dalam target storage (raw_* -> analytics_*) ...
+[14:51:41] [INFO] TRANSFORM| (3a) Data Inspection pada tabel raw_* di dalam storage ...
+[14:51:55] [INFO] TRANSFORM|   raw_accidents: 266,656 baris | weather=81 variasi (187 N/A) | duplikat ID=0
+[14:51:55] [INFO] TRANSFORM|   raw_nhtsa_api_cases: 8,798 baris | tanggal sentinel invalid=11 | nilai metrik invalid=8 | CountyName berakhiran FIPS=8,798
+[14:52:03] [INFO] TRANSFORM| (3b-c) SQL analytics_accidents selesai dieksekusi di storage (8.44s)
+[14:52:04] [INFO] TRANSFORM| (3b-c) SQL analytics_nhtsa_api_cases selesai dieksekusi di storage (0.18s)
+[14:52:06] [INFO] TRANSFORM| (3d) Validasi analytics_accidents: 266,656 baris x 27 kolom | null=0 | duplikat=0 | cuaca=81->7 grup | checksum=576,217
+[14:52:06] [INFO] TRANSFORM| (3d) Validasi analytics_nhtsa_api_cases: 8,779 baris x 12 kolom | null=0 | duplikat=0 | checksum=2,269,732,984
+[14:52:06] [INFO] TRANSFORM| (3e) Bukti isolasi raw: raw_accidents=266,656 baris & raw_nhtsa_api_cases=8,798 baris tetap utuh!
+[14:52:06] [INFO] TRANSFORM| Tabel perbandingan raw vs analytics ditampilkan di atas
+[14:52:06] [INFO] === ELT PIPELINE DIMULAI (Extract -> Load Raw -> Transform In-DB) ===
+[14:52:06] [INFO] EXTRACT  | Memulai ekstraksi data mentah dari sumber (tanpa cleaning/transformasi) ...
+[14:52:13] [INFO] EXTRACT  | Sumber 1 (Kaggle CSV): 266,656 baris x 21 kolom (raw string)
+[14:52:13] [INFO] EXTRACT  | Sumber 2 (NHTSA Crash API JSON): 8,798 baris x 9 atribut
+[14:52:13] [INFO] EXTRACT  | Sumber 3 (NHTSA GetStates): 53 entitas referensi state
+[14:52:13] [INFO] EXTRACT  | Pemeriksaan awal (tanpa modifikasi):
+[14:52:13] [INFO] EXTRACT  |   Kaggle CSV -> missing/kosong: 0, duplikat ID: 0, variasi Weather_Condition: 81 (termasuk 187 'N/A Precipitation')
+[14:52:13] [INFO] EXTRACT  |   NHTSA API  -> missing: 0, duplikat eksak: 0, St_Case berulang lintas tahun: 6,909, format tanggal /Date(ms+0000)/
+[14:52:13] [INFO] EXTRACT  | Selesai dalam 6.57 detik
+[14:52:15] [INFO] LOAD     | Menghubungkan ke target storage (Supabase PostgreSQL / skema raw) ...
+[14:52:15] [INFO] LOAD     | Koneksi berhasil -> SQLite 3.53.1 | database: supabase_local.db | skema: raw
+[14:52:34] [INFO] LOAD     | 266,656 baris raw JSON berhasil dimuat ke raw.accidents (raw_accidents)
+[14:52:34] [INFO] LOAD     | 8,798 baris raw JSON berhasil dimuat ke raw.nhtsa_api_cases (raw_nhtsa_api_cases)
+[14:52:34] [INFO] LOAD     | 53 baris raw JSON berhasil dimuat ke raw.nhtsa_states (raw_nhtsa_states)
+[14:52:34] [INFO] LOAD     | Seluruh raw data berhasil disimpan & diverifikasi pembacaannya dalam 19.15 detik
+[14:52:34] [INFO] TRANSFORM| Menjalankan SQL transformasi di dalam target storage (raw_* -> analytics_*) ...
+[14:52:34] [INFO] TRANSFORM| (3a) Data Inspection pada tabel raw_* di dalam storage ...
+[14:52:35] [INFO] TRANSFORM|   raw_accidents: 266,656 baris | weather=81 variasi (187 N/A) | duplikat ID=0
+[14:52:35] [INFO] TRANSFORM|   raw_nhtsa_api_cases: 8,798 baris | tanggal sentinel invalid=11 | nilai metrik invalid=8 | CountyName berakhiran FIPS=8,798
+[14:52:46] [INFO] TRANSFORM| (3b-c) SQL analytics_accidents selesai dieksekusi di storage (10.26s)
+[14:52:46] [INFO] TRANSFORM| (3b-c) SQL analytics_nhtsa_api_cases selesai dieksekusi di storage (0.31s)
+[14:52:47] [INFO] TRANSFORM| (3d) Validasi analytics_accidents: 266,656 baris x 27 kolom | null=0 | duplikat=0 | cuaca=81->7 grup | checksum=576,217
+[14:52:47] [INFO] TRANSFORM| (3d) Validasi analytics_nhtsa_api_cases: 8,779 baris x 12 kolom | null=0 | duplikat=0 | checksum=2,269,732,984
+[14:52:47] [INFO] TRANSFORM| (3e) Bukti isolasi raw: raw_accidents=266,656 baris & raw_nhtsa_api_cases=8,798 baris tetap utuh!
+[14:52:53] [INFO] INTEGRASI| Ekspor dataset hasil transformasi: transformed_dataset.csv (266,656), nhtsa_api_cases.csv (8,779)
+[14:52:53] [INFO] === ELT PIPELINE SELESAI DALAM 46.98 DETIK ===
+[14:52:54] [INFO] TESTING  | Semua pengujian ELT (Extract -> Load Raw -> Transform SQL -> End-to-End) berstatus Berhasil!

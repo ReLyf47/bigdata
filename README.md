@@ -23,7 +23,8 @@ bigdata/
 │   │   ├── data_wrangling.py
 │   │   ├── data_wrangling_2020_2024.py
 │   │   ├── data_wrangling_recent.py
-│   │   ├── load_supabase.py         # Muat dataset ke Supabase PostgreSQL
+│   │   ├── load_supabase.py         # Muat dataset ke Supabase PostgreSQL (ETL)
+│   │   ├── elt_supabase.py          # Eksekusi ELT ke Supabase (raw JSONB -> SQL analytics)
 │   │   └── test_api.py
 │   ├── reporting/                   # Generator laporan Word (DOCX) & PDF
 │   │   ├── generate_production_docs.py
@@ -51,12 +52,26 @@ bigdata/
         │   ├── Documentation/Dokumentasi_ETL.pdf & .docx
         │   ├── Documentation/etl_metrics.json
         │   └── Screenshots/01_extract.png ... 07_diagram_implementation.png
-        ├── powerbi_project/           # Proyek Fabric / Power BI Developer (PBIP)
-        │   ├── BigData.pbip
-        │   ├── BigData.Report/
-        │   ├── BigData.SemanticModel/
-        │   └── README.md
-        └── Tugas_Minggu10_Kelompok8.zip
+│       ├── powerbi_project/           # Proyek Fabric / Power BI Developer (PBIP)
+│       │   ├── BigData.pbip
+│       │   ├── BigData.Report/
+│       │   ├── BigData.SemanticModel/
+│       │   └── README.md
+│       └── Tugas_Minggu10_Kelompok8.zip
+└── minggu11/
+    ├── README_ELT_SUPABASE.md         # Panduan eksekusi ELT (lokal & Supabase)
+    ├── Tugas_Minggu11_Kelompok8/      # Luaran tugas ELT siap dikumpulkan
+    │   ├── Source_Code/ELT_Pipeline.ipynb
+    │   ├── Source_Code/postgres_elt_transform.sql
+    │   ├── Dataset/raw_dataset.csv            (266,656 baris raw)
+    │   ├── Dataset/raw_nhtsa_api_cases.csv    (8,798 baris API raw)
+    │   ├── Dataset/transformed_dataset.csv    (266,656 baris analytics)
+    │   ├── Dataset/nhtsa_api_cases.csv        (8,779 baris analytics)
+    │   ├── Dataset/supabase_local.db          (SQLite raw_* & analytics_*)
+    │   ├── Documentation/Dokumentasi_ELT.pdf & .docx
+    │   ├── Documentation/elt_metrics.json
+    │   └── Screenshots/01_extract.png ... 07_diagram_implementation.png
+    └── Tugas_Minggu11_Kelompok8.zip
 ```
 
 ---
